@@ -1,5 +1,7 @@
 # Git – historie a předání
 
+**Repozitář:** https://github.com/OSKKYSV2/webbb (větev `main`, stav CI na záložce Actions).
+
 Původní `VehicleRegistry-main.zip` neobsahoval složku `.git`, proto nelze obnovit původní autory a časové značky. **Datumy a commity z dřívějšího semestru nevymýšlíme.**
 
 ## Jak historie vznikla
@@ -10,15 +12,16 @@ Repozitář na GitHubu začíná importem opravené verze odevzdané v 7. týdnu
 2. doplnění skutečných výsledků ověření do dokumentace,
 3. opravy z ověřování: hláška u role administrátora, české chyby Identity,
 4. opravy z end-to-end testu: okamžitá platnost změn rolí, čitelné chybové stránky, limit velikosti fotek,
-5. end-to-end test `scripts/e2e_smoke.sh` a finální dokumentace.
+5. end-to-end test `scripts/e2e_smoke.sh` a finální dokumentace,
+6. doplnění výsledku GitHub Actions do dokumentace.
 
 Přesný seznam ukáže `git log --oneline`.
 
 ## Práce s repozitářem
 
 ```bash
-git clone <adresa repozitáře na GitHubu>
-cd VehicleRegistry
+git clone https://github.com/OSKKYSV2/webbb.git
+cd webbb
 git status
 ```
 

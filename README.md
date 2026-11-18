@@ -6,7 +6,8 @@ Semestrální projekt pro předmět **Pokročilé webové technologie**. Technol
 > - build proběhl bez chyb i upozornění a prošlo **26/26 testů**,
 > - migrace se shodují s modelem a `database update` uspěl na nové i na starší databázi s daty,
 > - NuGet audit nenašel žádné zranitelné balíčky,
-> - end-to-end test `scripts/e2e_smoke.sh` prošel **76/76** kontrol, takže jsou ověřeny všechny scénáře T01–T21 z `docs/TESTOVACI_PLAN.md` ve všech rolích, včetně fotek, CRUD a zabezpečení.
+> - end-to-end test `scripts/e2e_smoke.sh` prošel **76/76** kontrol, takže jsou ověřeny všechny scénáře T01–T21 z `docs/TESTOVACI_PLAN.md` ve všech rolích, včetně fotek, CRUD a zabezpečení,
+> - GitHub Actions v repozitáři https://github.com/OSKKYSV2/webbb jsou zelené (T22).
 >
 > Podrobné výsledky a sedm nalezených a opravených nedostatků jsou v `docs/STAV_OVERENI.md`.
 
@@ -150,7 +151,7 @@ Výsledek posledního běhu je v `docs/E2E_VYSLEDEK.txt`. Testovací databázi p
 
 ## Git a předání
 
-- Repozitář na GitHubu obsahuje celý projekt a GitHub Actions při každém pushi spustí build, testy, kontrolu migrací a audit balíčků (`.github/workflows/dotnet.yml`). Postup je v `docs/GIT_POSTUP.md`.
+- Repozitář https://github.com/OSKKYSV2/webbb obsahuje celý projekt. GitHub Actions při každém pushi spustí build, testy, kontrolu migrací a audit balíčků (`.github/workflows/dotnet.yml`). Postup je v `docs/GIT_POSTUP.md`.
 - Historie začíná importem opravené verze ze 7. týdne a pokračuje skutečnými opravami z ověřování. Nepředstírá práci z minulých týdnů.
 - Odevzdání 7. týdne: DOCX návrh, solution, entity, ER diagram, EF migrace a výsledek buildu, testů a migrací (`docs/STAV_OVERENI.md`).
 - Finální odevzdání: celý projekt, stav CI, otestované role a všechny obrazovky (`docs/STAV_OVERENI.md`, `docs/E2E_VYSLEDEK.txt`, `docs/OBHAJOBA.md`).

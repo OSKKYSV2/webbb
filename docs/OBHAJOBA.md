@@ -37,6 +37,6 @@
 - [x] Vlastní MVC registrace, přihlášení, zamčení účtu po 5 špatných pokusech a odhlášení fungují. Obnovu zapomenutého hesla e-mailem aplikace nemá (bez e-mailové služby).
 - [x] Role a bezpečnostní scénáře fungují: cizí vozidlo vrací 404, Customer a Manager nemají přístup tam, kam nemají, ochrana admina funguje s hláškou, nová role platí hned, POST bez antiforgery tokenu je odmítnut.
 - [x] Fotografie, CRUD a typy servisů fungují end-to-end: vozidla, servisní záznamy, druhy úkonů, servisy, výrobci a uživatelé včetně úprav a mazání (`scripts/e2e_smoke.sh`, 76/76).
-- [ ] Zelený běh GitHub Actions doložený na GitHubu.
+- [x] Zelený běh GitHub Actions: https://github.com/OSKKYSV2/webbb/actions (první běh 18. 11. 2026, všech 12 kroků prošlo).
 
 Výsledky pocházejí ze skutečného spuštění, podrobnosti jsou v `docs/STAV_OVERENI.md` a `docs/E2E_VYSLEDEK.txt`.

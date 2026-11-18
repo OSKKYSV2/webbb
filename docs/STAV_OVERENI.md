@@ -16,7 +16,8 @@ Tento soubor odlišuje vytvořený kód od skutečně ověřené aplikace. Všec
 | Migrace na SQL Serveru, čistá i starší DB s daty | **PASS** |
 | NuGet audit včetně transitivních balíčků | **PASS**: žádné zranitelnosti |
 | End-to-end test všech rolí (`scripts/e2e_smoke.sh`) | **PASS**: 76/76, výstup v `docs/E2E_VYSLEDEK.txt` |
-| Scénáře T01–T22 z `TESTOVACI_PLAN.md` | **PASS** všechny kromě T22 (GitHub Actions, viz níže) |
+| GitHub Actions | **PASS**: všech 12 kroků zelených |
+| Scénáře T01–T22 z `TESTOVACI_PLAN.md` | **PASS** všechny |
 
 ## Automatické kontroly
 
@@ -30,7 +31,7 @@ Tento soubor odlišuje vytvořený kód od skutečně ověřené aplikace. Všec
 | Idempotentní SQL skript | **PASS** | `dotnet ef migrations script --idempotent` vygeneroval `upgrade.sql` |
 | Migrace na čisté SQL Server DB (T19) | **PASS** | `database update` aplikoval obě migrace. Existují všechny FK, včetně `FK_ServiceRecords_AspNetUsers_CreatedById` (ON DELETE SET NULL), a indexy, včetně unikátních indexů VIN, SPZ a názvu výrobce. Seed: 3 výrobci, 4 druhy úkonů. |
 | Upgrade starší DB s daty (T20) | **PASS** | DB na migraci `InitialCreate` naplněná daty: uživatel, vozidlo a 3 servisní záznamy (platný autor, neexistující autor, bez autora). Po `database update`: data zachována, platný autor zůstal napojený, neexistující autor převeden na `NULL`, `CreatedById` je `nvarchar(450)` s FK a indexem. |
-| GitHub Actions (T22) | **NEOVĚŘENO** | Workflow `.github/workflows/dotnet.yml` je připravený. Výsledek běhu na GitHubu se doplní po nahrání repozitáře. Stejné kroky lokálně prošly. |
+| GitHub Actions (T22) | **PASS** | Repozitář https://github.com/OSKKYSV2/webbb, běh 18. 11. 2026 nad commitem `9454b76`: https://github.com/OSKKYSV2/webbb/actions/runs/44357563353. Všech 12 kroků je zelených: kontrola architektury, restore s NuGet auditem, build, testy, shoda EF modelu s migracemi, SQL skript a výpis zranitelných balíčků. Workflow běží při každém pushi, aktuální stav je na záložce Actions. |
 
 ## End-to-end test (`scripts/e2e_smoke.sh`)
 
