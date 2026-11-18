@@ -26,15 +26,15 @@
 7. V Admin roli otevřít `/Admin`, spravovat výrobce a uživatele, přiřadit role. Pokusit se smazat posledního Admina (musí být odmítnut).
 8. `dotnet build`, `dotnet test`, `dotnet ef migrations has-pending-model-changes` a `database update` ukázat ve výstupu (připravit předem). V GitHub Actions doložit skutečné výsledky.
 
-## Co lze prohlásit až po ověření na vašem PC / CI
+## Co je ověřeno (17. 11. 2026)
 
-- [ ] .NET 10 build je úspěšný.
-- [ ] SQLite relační testy procházejí.
-- [ ] `dotnet ef migrations has-pending-model-changes` vrací bez změn.
-- [ ] `dotnet ef database update` uspěje na nové a již migrované SQL Server databázi.
-- [ ] NuGet audit nevypisuje vysoké / kritické zranitelnosti, včetně transitivních balíčků.
-- [ ] Vlastní MVC Login/Register fungují i při obnově účtu a odhlášení.
-- [ ] Role a bezpečnostní scénáře fungují při ruční kontrole v prohlížeči.
-- [ ] Fotografie, CRUD a typy servisů fungují end-to-end.
+- [x] .NET 10 build je úspěšný (0 chyb, 0 upozornění).
+- [x] SQLite relační testy procházejí (21/21).
+- [x] `dotnet ef migrations has-pending-model-changes` vrací bez změn.
+- [x] `dotnet ef database update` uspěje na nové i na již migrované SQL Server databázi s daty (SQL Server 2022 LocalDB).
+- [x] NuGet audit nevypisuje žádné zranitelnosti, ani u transitivních balíčků.
+- [ ] Vlastní MVC Login/Register fungují i při obnově účtu a odhlášení. Registrace, přihlášení, špatné heslo a odhlášení ověřeny. Obnova účtu a lockout neověřeny.
+- [x] Role a bezpečnostní scénáře fungují při ruční kontrole v prohlížeči: cizí vozidlo vrací 404, Customer a Manager nemají přístup do administrace, ochrana admina funguje. Drobná vada: u ochrany admina se nezobrazí hláška.
+- [ ] Fotografie, CRUD a typy servisů fungují end-to-end. Vytvoření vozidla a zápis servisu ověřeny. Fotografie a úpravy či mazání neověřeny.
 
-Zdejší příprava byla bez .NET SDK/SQL Serveru. Statické kontroly **nepotvrzují runtime funkčnost**. Každé nezaškrtnuté kritérium výše je potřeba splnit před finálním odevzdáním.
+Výsledky pocházejí ze skutečného spuštění, podrobnosti jsou v `docs/STAV_OVERENI.md`. Nezaškrtnuté body je potřeba projít ručně před finální obhajobou. Výsledek GitHub Actions je potřeba doložit zvlášť.
