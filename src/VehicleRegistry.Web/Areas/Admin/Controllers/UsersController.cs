@@ -132,6 +132,8 @@ public sealed class UsersController(
 
     private void AddErrors(IdentityResult result)
     {
-        foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+        // E-mail is also the user name, so a duplicate account reports the same text twice.
+        foreach (var message in result.Errors.Select(e => e.Description).Distinct())
+            ModelState.AddModelError(string.Empty, message);
     }
 }

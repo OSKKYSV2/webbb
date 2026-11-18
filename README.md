@@ -2,7 +2,7 @@
 
 Semestrální projekt pro předmět **Pokročilé webové technologie**. Technologie: **.NET 10, ASP.NET Core MVC, EF Core 10.0.15, SQL Server, ASP.NET Core Identity, Serilog a xUnit**. Zachovává téma a databázový základ původně odevzdané aplikace. Opravy vycházejí z připomínek vyučujícího a následného posouzení funkčnosti.
 
-> **Stav ověření (17. 11. 2026):** Ověřeno skutečným spuštěním na Windows 11 s .NET SDK 10.0.400 a SQL Server 2022 LocalDB. Build proběhl bez chyb i upozornění, prošlo 21/21 testů a migrace se shodují s modelem. `database update` uspěl na nové databázi i na starší databázi s daty, NuGet audit nenašel žádné zranitelné balíčky a hlavní scénáře všech tří rolí fungují v prohlížeči. **Neověřeno** zůstává nahrávání fotografií, část CRUD scénářů a běh GitHub Actions. Podrobné výsledky a dvě zjištěné drobné vady v UI jsou v `docs/STAV_OVERENI.md`.
+> **Stav ověření (17. 11. 2026):** Ověřeno skutečným spuštěním na Windows 11 s .NET SDK 10.0.400 a SQL Server 2022 LocalDB. Build proběhl bez chyb i upozornění, prošlo 24/24 testů a migrace se shodují s modelem. `database update` uspěl na nové databázi i na starší databázi s daty, NuGet audit nenašel žádné zranitelné balíčky a hlavní scénáře všech tří rolí fungují v prohlížeči. **Neověřeno** zůstává nahrávání fotografií, část CRUD scénářů a běh GitHub Actions. Podrobné výsledky i dvě drobné vady v UI, které se při ověření našly a byly opraveny, jsou v `docs/STAV_OVERENI.md`.
 
 ## Funkce aplikace
 

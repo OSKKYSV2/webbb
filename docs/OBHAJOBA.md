@@ -29,12 +29,12 @@
 ## Co je ověřeno (17. 11. 2026)
 
 - [x] .NET 10 build je úspěšný (0 chyb, 0 upozornění).
-- [x] SQLite relační testy procházejí (21/21).
+- [x] SQLite relační testy procházejí (24/24).
 - [x] `dotnet ef migrations has-pending-model-changes` vrací bez změn.
 - [x] `dotnet ef database update` uspěje na nové i na již migrované SQL Server databázi s daty (SQL Server 2022 LocalDB).
 - [x] NuGet audit nevypisuje žádné zranitelnosti, ani u transitivních balíčků.
 - [ ] Vlastní MVC Login/Register fungují i při obnově účtu a odhlášení. Registrace, přihlášení, špatné heslo a odhlášení ověřeny. Obnova účtu a lockout neověřeny.
-- [x] Role a bezpečnostní scénáře fungují při ruční kontrole v prohlížeči: cizí vozidlo vrací 404, Customer a Manager nemají přístup do administrace, ochrana admina funguje. Drobná vada: u ochrany admina se nezobrazí hláška.
+- [x] Role a bezpečnostní scénáře fungují při ruční kontrole v prohlížeči: cizí vozidlo vrací 404, Customer a Manager nemají přístup do administrace, ochrana admina funguje včetně zobrazené hlášky.
 - [ ] Fotografie, CRUD a typy servisů fungují end-to-end. Vytvoření vozidla a zápis servisu ověřeny. Fotografie a úpravy či mazání neověřeny.
 
 Výsledky pocházejí ze skutečného spuštění, podrobnosti jsou v `docs/STAV_OVERENI.md`. Nezaškrtnuté body je potřeba projít ručně před finální obhajobou. Výsledek GitHub Actions je potřeba doložit zvlášť.

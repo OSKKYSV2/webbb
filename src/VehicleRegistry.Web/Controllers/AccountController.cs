@@ -31,7 +31,9 @@ public sealed class AccountController(
         var result = await users.CreateAsync(user, model.Password);
         if (!result.Succeeded)
         {
-            foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+            // E-mail is also the user name, so a duplicate account reports the same text twice.
+            foreach (var message in result.Errors.Select(e => e.Description).Distinct())
+                ModelState.AddModelError(string.Empty, message);
             return View(model);
         }
         var roleResult = await users.AddToRoleAsync(user, Roles.Customer);

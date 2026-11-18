@@ -13,7 +13,7 @@ Tento soubor odlišuje vytvořený kód od skutečně ověřené aplikace. Všec
 | Závislosti vrstev, verze EF Design/Tools, názvy MVC polí | **PASS** | `python scripts/verify_architecture.py` |
 | Restore a NuGet audit včetně transitivních balíčků | **PASS** | `dotnet package list --vulnerable --include-transitive`: žádný z 5 projektů nemá zranitelné balíčky |
 | Sestavení .NET 10 (Release) | **PASS** | `dotnet build VehicleRegistry.slnx`: 0 chyb, 0 upozornění |
-| Automatické testy | **PASS** | `dotnet test`: 21 úspěšných, 0 neúspěšných, 0 přeskočených |
+| Automatické testy | **PASS** | `dotnet test`: 24 úspěšných, 0 neúspěšných, 0 přeskočených (21 původních a 3 nové k českým chybám Identity) |
 | Shoda EF modelu a migrací (T21) | **PASS** | `has-pending-model-changes`: „No changes have been made to the model since the last migration.“ |
 | Idempotentní SQL skript | **PASS** | `dotnet ef migrations script --idempotent` vygeneroval `upgrade.sql` |
 | Migrace na čisté SQL Server DB (T19) | **PASS** | `database update` aplikoval obě migrace. Existují všechny FK, včetně `FK_ServiceRecords_AspNetUsers_CreatedById` (ON DELETE SET NULL), a indexy, včetně unikátních indexů VIN, SPZ a názvu výrobce. Seed: 3 výrobci, 4 druhy úkonů. |
@@ -29,7 +29,7 @@ Web byl spuštěn přes `dotnet run --launch-profile http` proti nové databázi
 |---|---|---|---|
 | – | Start aplikace | **PASS** | Při startu vzniknou role Admin, Manager a Customer a založí se bootstrap admin. |
 | T01 | Registrace | **PASS** | Nový účet má roli Customer a je rovnou přihlášený. |
-| T02 | Duplicitní e-mail | **PASS*** | Účet nevznikne, ale hlášky jsou anglicky (viz zjištění 2). |
+| T02 | Duplicitní e-mail | **PASS** | Účet nevznikne a zobrazí se jedna hláška „Účet s e-mailem '…' už existuje.“ (po opravě 2) |
 | T03 | Špatné heslo | **PASS** | „Nesprávný e-mail nebo heslo.“ Lockout po 5 pokusech se nezkoušel. |
 | T04 | Customer vytvoří vozidlo | **PASS** | Detail zobrazí VIN, SPZ, výrobce a nájezd. |
 | T05 | VIN s písmenem O | **PASS** | „VIN musí obsahovat přesně 17 znaků bez I, O a Q.“ |
@@ -43,16 +43,18 @@ Web byl spuštěn přes `dotnet run --launch-profile http` proti nové databázi
 | T13 | Úprava a smazání servisního záznamu | **NEOVĚŘENO** | Ručně nezkoušeno. |
 | T14 | Manager a číselníky | **ČÁSTEČNĚ** | Druhy úkonů jsou dostupné, výrobci a správa uživatelů odepřeny. CRUD číselníků se nezkoušel. |
 | T15 | Správa v roli Admin | **ČÁSTEČNĚ** | Seznam uživatelů a změna role Customer → Manager fungují. CRUD výrobců, vozidel a záznamů se nezkoušel. |
-| T16 | Admin si odebere vlastní roli | **PASS*** | Server změnu odmítne a role zůstane, formulář ale nezobrazí chybovou hlášku (viz zjištění 1). |
+| T16 | Admin si odebere vlastní roli | **PASS** | Server změnu odmítne, role zůstane a pod polem Role se zobrazí „Nelze odebrat roli aktuálnímu nebo poslednímu administrátorovi.“ (po opravě 1) |
 | T17 | Smazání uživatele s vozidlem | **PASS** | „Uživatel vlastní vozidla; nejprve je převeďte nebo smažte.“ |
 | T18 | Smazání autora servisního záznamu | **ČÁSTEČNĚ** | Chování FK (ON DELETE SET NULL) ověřeno v databázi, přes UI nezkoušeno. |
 
-\* Funkčně v pořádku, ale s drobnou vadou v UI.
+## Nedostatky nalezené při ověření (opraveno)
 
-## Zjištěné nedostatky
+Obě vady se našly při ručních scénářích. Po opravě znovu proběhly build, testy, migrace na čisté DB a scénáře T02 a T16 v prohlížeči.
 
-1. **Admin → Upravit uživatele:** v `src/VehicleRegistry.Web/Areas/Admin/Views/Users/Form.cshtml` chybí u pole Role `<span asp-validation-for="Role">` a souhrn chyb je `ModelOnly`. Hláška „Nelze odebrat roli aktuálnímu nebo poslednímu administrátorovi.“ se proto nezobrazí a stránka se jen znovu načte. Samotná ochrana funguje.
-2. **Registrace s existujícím e-mailem:** chyby z ASP.NET Identity jsou anglicky („Username '…' is already taken.“, „Email '…' is already taken.“). Chybí česky přeložený `IdentityErrorDescriber`.
+1. **Admin → Upravit uživatele:** formulář nezobrazil hlášku „Nelze odebrat roli aktuálnímu nebo poslednímu administrátorovi.“, protože u pole Role chyběl `<span asp-validation-for="Role">` a souhrn chyb je `ModelOnly`. Stránka se jen znovu načetla. Samotná ochrana fungovala.
+   *Oprava:* `src/VehicleRegistry.Web/Areas/Admin/Views/Users/Form.cshtml` – doplněn validační `<span>` u pole Role.
+2. **Registrace s existujícím e-mailem:** chyby z ASP.NET Identity byly anglicky a dvakrát („Username '…' is already taken.“ a „Email '…' is already taken.“), protože e-mail slouží zároveň jako uživatelské jméno.
+   *Oprava:* nový `src/VehicleRegistry.Infrastructure/Identity/CzechIdentityErrorDescriber.cs` s českými texty, které zachovávají kódy chyb Identity. Je zaregistrovaný v `DependencyInjection.cs` (`AddErrorDescriber`). `AccountController` a `Admin/UsersController` zobrazují každou hlášku jen jednou. Testy: `tests/VehicleRegistry.Tests/IdentityErrorTests.cs`.
 
 ## Poznámky k prostředí (nejde o chyby kódu)
 

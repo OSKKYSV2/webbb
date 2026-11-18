@@ -29,6 +29,7 @@ public static class DependencyInjection
             options.Lockout.MaxFailedAccessAttempts = 5;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddErrorDescriber<CzechIdentityErrorDescriber>()
         .AddDefaultTokenProviders();
 
         services.ConfigureApplicationCookie(options =>
