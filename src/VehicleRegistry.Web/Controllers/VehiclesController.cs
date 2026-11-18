@@ -122,7 +122,9 @@ public sealed class VehiclesController(
     }
 
     [Authorize(Roles = Roles.Admin + "," + Roles.Customer)]
-    [HttpPost, ValidateAntiForgeryToken, RequestSizeLimit(3 * 1024 * 1024)]
+    // Accept requests up to 10 MB so a photo over the 2 MB rule below still gets a clear message;
+    // anything larger is cut off by the server and shown as the friendly 400 page.
+    [HttpPost, ValidateAntiForgeryToken, RequestSizeLimit(10 * 1024 * 1024)]
     public async Task<IActionResult> UploadPhoto(int id, IFormFile? photo)
     {
         var vehicle = await vehicles.GetVisibleAsync(id, MyId, IsAdmin);

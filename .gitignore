@@ -6,6 +6,10 @@
 # dotenv files
 .env
 
+# Photos uploaded by users at runtime and generated SQL scripts
+src/VehicleRegistry.Web/wwwroot/uploads/
+upgrade.sql
+
 # User-specific files
 *.rsuser
 *.suo

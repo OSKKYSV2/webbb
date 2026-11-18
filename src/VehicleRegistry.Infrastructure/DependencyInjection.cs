@@ -32,6 +32,10 @@ public static class DependencyInjection
         .AddErrorDescriber<CzechIdentityErrorDescriber>()
         .AddDefaultTokenProviders();
 
+        // Re-check the account on every request, so a changed role or a deleted user
+        // takes effect immediately instead of after the default 30 minutes.
+        services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.Zero);
+
         services.ConfigureApplicationCookie(options =>
         {
             options.LoginPath = "/Account/Login";

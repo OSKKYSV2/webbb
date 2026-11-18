@@ -114,7 +114,11 @@ public sealed class UsersController(
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(string id)
     {
-        if (id == users.GetUserId(User)) return BadRequest("Nelze odstranit vlastní účet.");
+        if (id == users.GetUserId(User))
+        {
+            TempData["Error"] = "Nelze odstranit vlastní účet.";
+            return RedirectToAction(nameof(Index));
+        }
         var user = await users.FindByIdAsync(id);
         if (user is null) return NotFound();
         if ((await vehicles.GetMineAsync(id)).Count > 0)
@@ -123,7 +127,10 @@ public sealed class UsersController(
             return RedirectToAction(nameof(Index));
         }
         if (await users.IsInRoleAsync(user, Roles.Admin) && (await users.GetUsersInRoleAsync(Roles.Admin)).Count <= 1)
-            return BadRequest("Posledního administrátora nelze smazat.");
+        {
+            TempData["Error"] = "Posledního administrátora nelze smazat.";
+            return RedirectToAction(nameof(Index));
+        }
         var result = await users.DeleteAsync(user);
         TempData[result.Succeeded ? "Message" : "Error"] = result.Succeeded
             ? "Uživatel byl smazán." : "Uživatele se nepodařilo smazat.";

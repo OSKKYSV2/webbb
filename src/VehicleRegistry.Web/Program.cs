@@ -20,6 +20,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+// Empty 400/403/404 responses get a readable page; the original status code is kept.
+app.UseStatusCodePagesWithReExecute("/Home/Status/{0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

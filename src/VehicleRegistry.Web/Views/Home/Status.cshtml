@@ -1,0 +1,18 @@
+@model int
+@{
+    var (title, text) = Model switch
+    {
+        400 => ("Neplatný požadavek", "Formulář se nepodařilo zpracovat, například kvůli příliš velkému souboru nebo vypršené stránce. Načtěte stránku znovu a akci zopakujte."),
+        403 => ("Nemáte oprávnění", "Tato stránka je dostupná jen uživatelům s příslušnou rolí."),
+        404 => ("Stránka nenalezena", "Hledaná stránka neexistuje nebo k ní nemáte přístup."),
+        413 => ("Soubor je příliš velký", "Fotografie může mít maximálně 2 MB."),
+        _ => ("Požadavek se nepodařilo dokončit", "Zkuste akci zopakovat.")
+    };
+    ViewData["Title"] = title;
+}
+<div class="empty-state">
+    <p class="eyebrow">Chyba @Model</p>
+    <h1>@title</h1>
+    <p>@text</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Zpět na úvod</a>
+</div>
