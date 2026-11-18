@@ -1,0 +1,42 @@
+@model IReadOnlyList<VehicleRegistry.Domain.Entities.Vehicle>
+@using VehicleRegistry.Domain.Constants
+@{
+    ViewData["Title"] = "Vozidla";
+    bool staff = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Manager);
+}
+<div class="page-heading">
+    <div><span class="eyebrow">REGISTR VOZIDEL</span><h1>@(staff ? "Všechna vozidla" : "Moje vozidla")</h1><p class="text-muted">Evidence vozidel, historie servisních úkonů a doporučení údržby.</p></div>
+    @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Customer)) { <a class="btn btn-primary" asp-action="Create">+ Přidat vozidlo</a> }
+</div>
+@if (staff)
+{
+    <form asp-action="Search" method="get" class="input-group mb-4">
+        <input name="q" value="@ViewBag.Query" class="form-control" placeholder="Hledat podle VIN nebo SPZ" aria-label="Hledat" />
+        <button class="btn btn-outline-primary">Hledat</button>
+    </form>
+}
+@if (Model.Count == 0)
+{
+    <div class="empty-state"><h2>Žádná vozidla</h2><p>První vozidlo můžete přidat tlačítkem nahoře.</p></div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var vehicle in Model)
+        {
+            <div class="col-md-6 col-xl-4">
+                <a asp-action="Details" asp-route-id="@vehicle.Id" class="vehicle-card">
+                    <div class="vehicle-card-visual">
+                        @if (!string.IsNullOrWhiteSpace(vehicle.ImagePath)) { <img src="@vehicle.ImagePath" alt="Vozidlo @vehicle.LicensePlate" /> }
+                        else { <span class="vehicle-placeholder">🚘</span> }
+                    </div>
+                    <div class="p-3">
+                        <span class="eyebrow">@vehicle.LicensePlate</span>
+                        <h2 class="h5 mt-1">@vehicle.Manufacturer?.Name @vehicle.Model</h2>
+                        <div class="d-flex justify-content-between text-muted"><span>@vehicle.YearOfManufacture</span><span>@vehicle.Mileage.ToString("N0") km</span></div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}

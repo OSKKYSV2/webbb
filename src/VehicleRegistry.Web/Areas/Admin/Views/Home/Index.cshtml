@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Administrace";
+}
+<div class="page-heading">
+    <div><span class="eyebrow">SPRÁVA APLIKACE</span><h1>Administrace</h1>
+    <p class="text-muted">Správa uživatelů, výrobců, vozidel a servisní knihy. Přístup je povolen pouze roli Admin.</p></div>
+</div>
+<div class="row g-3">
+    <div class="col-lg-4 col-md-6"><div class="panel h-100"><h2 class="h5">Uživatelé a role</h2>
+        <p>Zakládání účtů, správa rolí, zabezpečení posledního administrátora.</p>
+        <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-primary">Spravovat uživatele</a></div></div>
+    <div class="col-lg-4 col-md-6"><div class="panel h-100"><h2 class="h5">Výrobci</h2>
+        <p>Správa výrobců vozidel a jejich zemí původu.</p>
+        <a asp-area="" asp-controller="Catalogs" asp-action="Index" asp-route-kind="manufacturers" class="btn btn-outline-primary">Spravovat výrobce</a></div></div>
+    <div class="col-lg-4 col-md-6"><div class="panel h-100"><h2 class="h5">Vozidla</h2>
+        <p>Zobrazení všech vozidel, detailů a jejich servisních historií.</p>
+        <a asp-area="" asp-controller="Vehicles" asp-action="Index" class="btn btn-outline-primary">Všechna vozidla</a></div></div>
+    <div class="col-lg-4 col-md-6"><div class="panel h-100"><h2 class="h5">Servisní historie</h2>
+        <p>Vkládání, úpravy a odstranění servisních záznamů.</p>
+        <a asp-area="" asp-controller="ServiceRecords" asp-action="Index" class="btn btn-outline-primary">Servisní záznamy</a></div></div>
+    <div class="col-lg-4 col-md-6"><div class="panel h-100"><h2 class="h5">Druhy úkonů</h2>
+        <p>Servisní intervaly, typy údržby a plánované kontroly.</p>
+        <a asp-area="" asp-controller="Catalogs" asp-action="Index" asp-route-kind="types" class="btn btn-outline-primary">Typy servisů</a></div></div>
+    <div class="col-lg-4 col-md-6"><div class="panel h-100"><h2 class="h5">Servisní dílny</h2>
+        <p>Číselník servisních dílen a kontaktních údajů.</p>
+        <a asp-area="" asp-controller="Catalogs" asp-action="Index" asp-route-kind="centers" class="btn btn-outline-primary">Spravovat dílny</a></div></div>
+</div>

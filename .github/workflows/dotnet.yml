@@ -1,0 +1,41 @@
+name: VehicleRegistry CI (.NET 10)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test-migrations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Static architecture and dependency checks
+        run: python3 scripts/verify_architecture.py
+      - name: Restore projects (NuGet security audit, high issues fail)
+        run: dotnet restore VehicleRegistry.slnx
+      - name: Build solution
+        run: dotnet build VehicleRegistry.slnx --configuration Release --no-restore
+      - name: Relational unit tests (SQLite in-memory)
+        run: dotnet test tests/VehicleRegistry.Tests/VehicleRegistry.Tests.csproj --configuration Release --no-build --logger 'console;verbosity=normal'
+      - name: Restore EF Core CLI tool
+        run: dotnet tool restore
+      - name: Ensure migrations match the actual EF model
+        run: dotnet ef migrations has-pending-model-changes --project src/VehicleRegistry.Infrastructure --startup-project src/VehicleRegistry.Web --configuration Release --no-build
+      - name: Generate SQL Server upgrade script (offline, no database required)
+        run: |
+          mkdir -p artifacts/sql
+          dotnet ef migrations script --idempotent --project src/VehicleRegistry.Infrastructure --startup-project src/VehicleRegistry.Web --configuration Release --no-build --output artifacts/sql/upgrade.sql
+          test -s artifacts/sql/upgrade.sql
+      - name: Report direct and transitive vulnerable packages
+        run: dotnet package list --project VehicleRegistry.slnx --vulnerable --include-transitive
+      - name: Upload generated SQL upgrade script
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-server-migrations
+          path: artifacts/sql/upgrade.sql

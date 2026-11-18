@@ -1,0 +1,14 @@
+@model IReadOnlyList<VehicleRegistry.Web.Areas.Admin.Models.UserListRow>
+@{
+    ViewData["Title"] = "Správa uživatelů";
+}
+<div class="page-heading"><div><span class="eyebrow">ADMINISTRACE</span><h1>Uživatelé a role</h1><p class="text-muted">Správa zákazníků, pracovníků servisu a administrátorů.</p></div><a asp-action="Create" class="btn btn-primary">+ Nový uživatel</a></div>
+<div class="panel table-responsive">
+    <table class="table align-middle"><thead><tr><th>Uživatel</th><th>E-mail</th><th>Role</th><th class="text-end">Akce</th></tr></thead><tbody>
+    @foreach (var user in Model)
+    {
+        <tr><td>@user.FullName</td><td>@user.Email</td><td>@user.Role</td><td class="text-end"><a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary">Upravit</a>
+            <form asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline" onsubmit="return confirm('Opravdu odstranit uživatele?');"><button class="btn btn-sm btn-outline-danger">Smazat</button></form></td></tr>
+    }
+    </tbody></table>
+</div>

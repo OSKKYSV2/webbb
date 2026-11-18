@@ -1,0 +1,14 @@
+@model IReadOnlyList<VehicleRegistry.Domain.Entities.ServiceRecord>
+@{
+    ViewData["Title"] = "Servisní záznamy";
+}
+<div class="page-heading"><div><span class="eyebrow">SERVISNÍ KNIHA</span><h1>Servisní záznamy</h1><p class="text-muted">Přehled servisů napříč vozidly.</p></div><a asp-action="Create" class="btn btn-primary">+ Nový záznam</a></div>
+<div class="panel table-responsive">
+    <table class="table align-middle"><thead><tr><th>Datum</th><th>Vozidlo</th><th>Úkon</th><th>Servis</th><th>Stav</th><th class="text-end">Cena</th><th></th></tr></thead><tbody>
+    @foreach (var r in Model)
+    {
+        <tr><td>@r.ServiceDate.ToString("d.M.yyyy")</td><td><a asp-controller="Vehicles" asp-action="Details" asp-route-id="@r.VehicleId">@r.Vehicle?.LicensePlate</a></td><td>@r.ServiceType?.Name</td><td>@r.ServiceCenter?.Name</td><td>@r.Status</td><td class="text-end">@r.Price.ToString("N2") Kč</td><td><a asp-action="Edit" asp-route-id="@r.Id">Upravit</a></td></tr>
+    }
+    </tbody></table>
+    @if (Model.Count == 0) { <p class="text-muted">Zatím žádné servisní záznamy.</p> }
+</div>

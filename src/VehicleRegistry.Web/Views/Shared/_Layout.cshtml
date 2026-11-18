@@ -1,0 +1,62 @@
+@using VehicleRegistry.Domain.Constants
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Registr vozidel se servisní knihou a historií údržby." />
+    <title>@ViewData["Title"] | VehicleRegistry</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="main-header">
+        <nav class="navbar navbar-expand-lg navbar-light container">
+            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index"><span class="brand-icon">V</span> VehicleRegistry</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Zobrazit navigaci"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto ms-lg-4 gap-lg-1">
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Úvod</a></li>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Vehicles" asp-action="Index">Vozidla</a></li>
+                        @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Manager))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="ServiceRecords" asp-action="Index">Servisní záznamy</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Catalogs" asp-action="Index" asp-route-kind="types">Druhy úkonů</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Catalogs" asp-action="Index" asp-route-kind="centers">Servisy</a></li>
+                        }
+                        @if (User.IsInRole(Roles.Admin))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Catalogs" asp-action="Index" asp-route-kind="manufacturers">Výrobci</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Administrace</a></li>
+                        }
+                    }
+                </ul>
+                <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <span class="text-muted small me-2 d-none d-xl-inline">@User.Identity.Name</span>
+                        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post"><button type="submit" class="btn btn-outline-secondary btn-sm">Odhlásit se</button></form>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-sm">Přihlášení</a>
+                        <a asp-area="" asp-controller="Account" asp-action="Register" class="btn btn-primary btn-sm">Registrace</a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="container main-content" role="main">
+        @if (TempData["Message"] is string message) { <div class="alert alert-success" role="status">@message</div> }
+        @if (TempData["Error"] is string error) { <div class="alert alert-danger" role="alert">@error</div> }
+        @RenderBody()
+    </main>
+    <footer class="site-footer"><div class="container d-flex flex-wrap gap-2 justify-content-between"><span>© @DateTime.Today.Year VehicleRegistry</span><span>Semestrální projekt • ASP.NET Core MVC • EF Core</span></div></footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

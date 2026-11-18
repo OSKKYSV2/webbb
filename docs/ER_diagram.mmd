@@ -1,0 +1,43 @@
+erDiagram
+  APPLICATION_USER ||--o{ VEHICLE : owns
+  APPLICATION_USER |o--o{ SERVICE_RECORD : created_by
+  MANUFACTURER ||--o{ VEHICLE : produces
+  VEHICLE ||--o{ SERVICE_RECORD : has
+  SERVICE_TYPE ||--o{ SERVICE_RECORD : categorizes
+  SERVICE_CENTER |o--o{ SERVICE_RECORD : performs
+
+  APPLICATION_USER {
+    string Id PK
+    string Email
+    string FirstName
+    string LastName
+  }
+  VEHICLE {
+    int Id PK
+    string Vin UK
+    string LicensePlate UK
+    int ManufacturerId FK
+    string OwnerId FK
+    int Mileage
+  }
+  MANUFACTURER {
+    int Id PK
+    string Name UK
+  }
+  SERVICE_RECORD {
+    int Id PK
+    int VehicleId FK
+    int ServiceTypeId FK
+    int ServiceCenterId FK
+    string CreatedById FK
+    datetime ServiceDate
+    int MileageAtService
+  }
+  SERVICE_TYPE {
+    int Id PK
+    string Name
+  }
+  SERVICE_CENTER {
+    int Id PK
+    string Name
+  }

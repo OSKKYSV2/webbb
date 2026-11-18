@@ -1,0 +1,30 @@
+@model VehicleRegistry.Web.Models.Vehicles.VehicleForm
+@using VehicleRegistry.Domain.Enums
+@using VehicleRegistry.Domain.Constants
+@{
+    bool edit = Model.Id != 0;
+    ViewData["Title"] = edit ? "Upravit vozidlo" : "Přidat vozidlo";
+}
+<div class="page-heading"><div><span class="eyebrow">EVIDENCE VOZIDEL</span><h1>@ViewData["Title"]</h1></div></div>
+<div class="form-panel">
+    <form asp-action="@(edit ? "Edit" : "Create")" asp-route-id="@(edit ? Model.Id : null)" method="post">
+        <input asp-for="Id" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row g-3">
+            <div class="col-md-6"><label asp-for="Vin" class="form-label"></label><input asp-for="Vin" class="form-control text-uppercase" maxlength="17" /><span asp-validation-for="Vin" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="LicensePlate" class="form-label"></label><input asp-for="LicensePlate" class="form-control text-uppercase" /><span asp-validation-for="LicensePlate" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="ManufacturerId" class="form-label"></label><select asp-for="ManufacturerId" asp-items="ViewBag.Manufacturers" class="form-select"><option value="">Vyberte výrobce</option></select><span asp-validation-for="ManufacturerId" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="VehicleModel" class="form-label"></label><input asp-for="VehicleModel" class="form-control" /><span asp-validation-for="VehicleModel" class="text-danger"></span></div>
+            <div class="col-md-4"><label asp-for="YearOfManufacture" class="form-label"></label><input asp-for="YearOfManufacture" class="form-control" /><span asp-validation-for="YearOfManufacture" class="text-danger"></span></div>
+            <div class="col-md-4"><label asp-for="FuelType" class="form-label"></label><select asp-for="FuelType" asp-items="Html.GetEnumSelectList<FuelType>()" class="form-select"></select></div>
+            <div class="col-md-4"><label asp-for="Mileage" class="form-label"></label><input asp-for="Mileage" class="form-control" /><span asp-validation-for="Mileage" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="Color" class="form-label"></label><input asp-for="Color" class="form-control" /><span asp-validation-for="Color" class="text-danger"></span></div>
+            @if (User.IsInRole(Roles.Admin) && !edit)
+            {
+                <div class="col-md-6"><label asp-for="OwnerId" class="form-label"></label><select asp-for="OwnerId" asp-items="ViewBag.Owners" class="form-select"><option value="">Aktuálně přihlášený účet</option></select></div>
+            }
+        </div>
+        <div class="d-flex gap-2 mt-4"><button class="btn btn-primary" type="submit">@(edit ? "Uložit změny" : "Vytvořit vozidlo")</button><a asp-action="Index" class="btn btn-outline-secondary">Zrušit</a></div>
+    </form>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /><script src="~/js/validations.js" asp-append-version="true"></script> }

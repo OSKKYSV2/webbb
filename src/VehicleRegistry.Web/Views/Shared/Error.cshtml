@@ -1,0 +1,7 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Chyba aplikace";
+}
+<div class="empty-state"><h1>Požadavek se nepodařilo dokončit.</h1><p>Omlouváme se za komplikace. Zkuste akci opakovat.</p>
+@if (Model.ShowRequestId) { <p class="small text-muted">ID požadavku: <code>@Model.RequestId</code></p> }
+<a asp-controller="Home" asp-action="Index" class="btn btn-primary">Zpět na úvod</a></div>

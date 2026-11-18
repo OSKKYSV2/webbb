@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Servisní knížka pro každé auto";
+}
+<section class="hero">
+    <div class="hero-content">
+        <span class="eyebrow">VEŠKERÝ SERVIS NA JEDNOM MÍSTĚ</span>
+        <h1>O své auto se postarejte <span class="accent">s přehledem.</span></h1>
+        <p>Zapište vozidla, mějte po ruce celou servisní historii a včas zjistěte, kdy je potřeba další údržba.</p>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Vehicles" asp-action="Index" class="btn btn-primary btn-lg">Otevřít moje vozidla</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">Začít zdarma</a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-light btn-lg">Mám účet</a>
+            }
+        </div>
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="car-symbol">🚗</div><div class="hero-label">Vaše digitální servisní knížka</div><div class="hero-meter"><span></span></div><div class="hero-sub">STK · olej · pneumatiky</div></div>
+</section>
+<section class="features">
+    <div class="text-center mb-5"><span class="eyebrow">JAK TO FUNGUJE</span><h2>Jednoduchá evidence bez papírů</h2></div>
+    <div class="row g-4">
+        <div class="col-md-4"><div class="feature-tile"><div class="feature-icon">01</div><h3>Vaše vozidla</h3><p>Evidence VIN, registrační značky, tachometru i fotografie všech vašich vozidel.</p></div></div>
+        <div class="col-md-4"><div class="feature-tile"><div class="feature-icon">02</div><h3>Servisní historie</h3><p>Dokončené a plánované úkony s daty, cenami a informací o konkrétním servisu.</p></div></div>
+        <div class="col-md-4"><div class="feature-tile"><div class="feature-icon">03</div><h3>Připomínky údržby</h3><p>Orientační doporučení dalšího servisu podle počtu kilometrů a měsíců.</p></div></div>
+    </div>
+</section>

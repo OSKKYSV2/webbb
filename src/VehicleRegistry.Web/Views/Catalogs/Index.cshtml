@@ -1,0 +1,15 @@
+@model VehicleRegistry.Web.Models.Catalogs.CatalogList
+@{
+    ViewData["Title"] = Model.Title;
+}
+<div class="page-heading"><div><span class="eyebrow">ČÍSELNÍKY</span><h1>@Model.Title</h1></div><a asp-action="Create" asp-route-kind="@Model.Kind" class="btn btn-primary">+ Přidat záznam</a></div>
+<div class="panel table-responsive">
+    <table class="table align-middle"><thead><tr><th>Název</th><th>Podrobnosti</th><th class="text-end">Akce</th></tr></thead><tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr><td class="fw-semibold">@item.Name</td><td>@item.Detail</td><td class="text-end"><a asp-action="Edit" asp-route-kind="@Model.Kind" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Upravit</a>
+            <form asp-action="Delete" asp-route-kind="@Model.Kind" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Opravdu smazat?');"><button class="btn btn-sm btn-outline-danger">Smazat</button></form></td></tr>
+    }
+    </tbody></table>
+    @if (Model.Items.Count == 0) { <p class="text-muted">Číselník je prázdný.</p> }
+</div>

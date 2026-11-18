@@ -1,0 +1,63 @@
+@model VehicleRegistry.Web.Models.Vehicles.VehicleDetail
+@using VehicleRegistry.Domain.Constants
+@{
+    ViewData["Title"] = "Vozidlo " + Model.Vehicle.LicensePlate;
+    var v = Model.Vehicle;
+}
+<div class="page-heading">
+    <div><span class="eyebrow">@v.LicensePlate • @v.Vin</span><h1>@v.Manufacturer?.Name @v.Model</h1><p class="text-muted">@v.YearOfManufacture · @v.FuelType · @v.Mileage.ToString("N0") km</p></div>
+    <div class="d-flex gap-2">
+        @if (Model.CanEdit) { <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@v.Id">Upravit vozidlo</a> }
+        <a class="btn btn-outline-secondary" asp-action="Index">Zpět</a>
+    </div>
+</div>
+<div class="row g-4 mb-4">
+    <div class="col-lg-5">
+        <div class="panel h-100">
+            @if (!string.IsNullOrEmpty(v.ImagePath)) { <img class="vehicle-detail-photo" src="@v.ImagePath" alt="Fotografie vozidla" /> }
+            else { <div class="vehicle-detail-photo vehicle-placeholder">🚘</div> }
+            <dl class="row mt-3 small">
+                <dt class="col-5">VIN</dt><dd class="col-7 text-break">@v.Vin</dd>
+                <dt class="col-5">SPZ</dt><dd class="col-7">@v.LicensePlate</dd>
+                <dt class="col-5">Barva</dt><dd class="col-7">@(v.Color ?? "Neuvedena")</dd>
+                @if (Model.IsStaff) { <dt class="col-5">Vlastník</dt><dd class="col-7">@v.Owner?.Email</dd> }
+            </dl>
+            @if (Model.CanEdit)
+            {
+                <form asp-action="UploadPhoto" asp-route-id="@v.Id" enctype="multipart/form-data" method="post" class="mt-3">
+                    <label for="photo" class="form-label small">Fotografie (JPEG/PNG, max. 2 MB)</label>
+                    <div class="input-group"><input class="form-control" id="photo" name="photo" type="file" accept="image/png,image/jpeg" required /><button class="btn btn-outline-primary">Nahrát</button></div>
+                </form>
+                <form asp-action="Delete" asp-route-id="@v.Id" method="post" class="mt-3" onsubmit="return confirm('Opravdu smazat vozidlo včetně celé historie?');">
+                    <button class="btn btn-sm btn-outline-danger">Smazat vozidlo</button>
+                </form>
+            }
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="panel h-100">
+            <h2 class="h4">Doporučená údržba</h2>
+            <p class="text-muted small">Orientační termíny podle posledního dokončeného servisu; nejsou náhradou servisního plánu výrobce.</p>
+            @foreach (var r in Model.Recommendations)
+            {
+                <div class="recommendation-row">
+                    <div><strong>@r.ServiceName</strong><div class="small text-muted">@(!r.HasHistory ? "Zatím bez dokončeného úkonu" : $"Další servis: {r.NextMileage?.ToString("N0") ?? "–"} km / {r.NextDate?.ToString("d.M.yyyy") ?? "–"}")</div></div>
+                    <span class="@(r.Due ? "text-danger fw-semibold" : "text-muted")">@(r.Due ? "Zkontrolovat" : r.HasHistory ? "Sledovat" : "Bez historie")</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="panel">
+    <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h4 mb-0">Servisní historie</h2>@if (Model.IsStaff) { <a asp-controller="ServiceRecords" asp-action="Create" asp-route-vehicleId="@v.Id" class="btn btn-primary btn-sm">+ Zapsat servis</a> }</div>
+    @if (!v.ServiceRecords.Any()) { <p class="text-muted">Pro toto vozidlo zatím nejsou záznamy.</p> }
+    else
+    {
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Datum</th><th>Úkon</th><th>Stav</th><th class="text-end">Tachometr</th><th class="text-end">Cena</th><th></th></tr></thead><tbody>
+        @foreach (var r in v.ServiceRecords.OrderByDescending(x => x.ServiceDate))
+        {
+            <tr><td>@r.ServiceDate.ToString("d.M.yyyy")</td><td><strong>@r.ServiceType?.Name</strong><div class="text-muted small">@r.ServiceCenter?.Name @r.Note</div></td><td>@r.Status</td><td class="text-end">@r.MileageAtService.ToString("N0") km</td><td class="text-end">@r.Price.ToString("N2") Kč</td><td>@if (Model.IsStaff) { <a asp-controller="ServiceRecords" asp-action="Edit" asp-route-id="@r.Id">Upravit</a> }</td></tr>
+        }
+        </tbody></table></div>
+    }
+</div>

@@ -1,0 +1,28 @@
+@model VehicleRegistry.Web.Models.ServiceRecords.ServiceRecordForm
+@using VehicleRegistry.Domain.Enums
+@{
+    bool edit = Model.Id != 0;
+    ViewData["Title"] = edit ? "Upravit servisní záznam" : "Nový servisní záznam";
+}
+<div class="page-heading"><div><span class="eyebrow">SERVISNÍ KNIHA</span><h1>@ViewData["Title"]</h1></div></div>
+<div class="form-panel">
+    <form asp-action="@(edit ? "Edit" : "Create")" asp-route-id="@(edit ? Model.Id : null)" method="post">
+        <input asp-for="Id" type="hidden" /><div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row g-3">
+            <div class="col-md-6"><label asp-for="VehicleId" class="form-label"></label><select asp-for="VehicleId" asp-items="ViewBag.Vehicles" class="form-select"><option value="">Vyberte vozidlo</option></select><span asp-validation-for="VehicleId" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="ServiceTypeId" class="form-label"></label><select asp-for="ServiceTypeId" asp-items="ViewBag.Types" class="form-select"><option value="">Vyberte úkon</option></select><span asp-validation-for="ServiceTypeId" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="ServiceCenterId" class="form-label"></label><select asp-for="ServiceCenterId" asp-items="ViewBag.Centers" class="form-select"><option value="">Bez konkrétního servisu</option></select></div>
+            <div class="col-md-6"><label asp-for="Status" class="form-label"></label><select asp-for="Status" asp-items="Html.GetEnumSelectList<ServiceRecordStatus>()" class="form-select"></select></div>
+            <div class="col-md-4"><label asp-for="ServiceDate" class="form-label"></label><input asp-for="ServiceDate" type="date" class="form-control" /><span asp-validation-for="ServiceDate" class="text-danger"></span></div>
+            <div class="col-md-4"><label asp-for="MileageAtService" class="form-label"></label><input asp-for="MileageAtService" class="form-control" /><span asp-validation-for="MileageAtService" class="text-danger"></span></div>
+            <div class="col-md-4"><label asp-for="Price" class="form-label"></label><input asp-for="Price" class="form-control" /><span asp-validation-for="Price" class="text-danger"></span></div>
+            <div class="col-12"><label asp-for="Note" class="form-label"></label><textarea asp-for="Note" rows="4" class="form-control"></textarea><span asp-validation-for="Note" class="text-danger"></span></div>
+        </div>
+        <div class="d-flex gap-2 mt-4"><button class="btn btn-primary">Uložit servis</button><a asp-action="Index" class="btn btn-outline-secondary">Zrušit</a></div>
+    </form>
+    @if (edit)
+    {
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="mt-4" onsubmit="return confirm('Opravdu odstranit servisní záznam?');"><button class="btn btn-sm btn-outline-danger">Smazat záznam</button></form>
+    }
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
