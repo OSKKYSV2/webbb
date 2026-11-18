@@ -1,6 +1,6 @@
 # Akceptační a regresní testovací scénáře
 
-Tento dokument je kontrolní plán. Neoznačuje testy automaticky za úspěšné.
+Tento dokument je kontrolní plán. Neoznačuje testy automaticky za úspěšné. Výsledky posledního skutečného ověření jsou v `docs/STAV_OVERENI.md`. Scénáře T01–T18 automaticky prochází `scripts/e2e_smoke.sh` (výstup v `docs/E2E_VYSLEDEK.txt`), T19–T21 `scripts/verify_full.ps1 -ApplyDatabase` a T22 GitHub Actions.
 
 | ID | Uživatelský scénář | Očekávaný výsledek |
 |---|---|---|

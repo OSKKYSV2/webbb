@@ -23,18 +23,20 @@
 4. Přidat vlastní vozidlo, otestovat VIN, SPZ, cenu a tachometr, nahrát JPG/PNG fotografii a zkusit nepovolený soubor.
 5. Na druhém Customer účtu se pokusit otevřít cizí auto přímým URL (očekáván 404). Manager umí vyhledávat všechna auta, ale neupravuje vozidla ani uživatele.
 6. V Manager roli zapsat dokončený servis – stav tachometru se nesmí snížit. Upravit a smazat servisní záznam, upravit číselníky servisu.
-7. V Admin roli otevřít `/Admin`, spravovat výrobce a uživatele, přiřadit role. Pokusit se smazat posledního Admina (musí být odmítnut).
-8. `dotnet build`, `dotnet test`, `dotnet ef migrations has-pending-model-changes` a `database update` ukázat ve výstupu (připravit předem). V GitHub Actions doložit skutečné výsledky.
+7. V Admin roli otevřít `/Admin`, spravovat výrobce a uživatele, přiřadit role. Pokusit se odebrat si roli Admin nebo smazat vlastní účet (musí být odmítnuto s hláškou). Po změně role ukázat, že platí hned bez nového přihlášení.
+8. `dotnet build`, `dotnet test`, `dotnet ef migrations has-pending-model-changes` a `database update` ukázat ve výstupu (připravit předem). Na GitHubu ukázat zelený běh GitHub Actions.
+9. Volitelně spustit `scripts/e2e_smoke.sh` proti prázdné databázi (76 automatických kontrol všech rolí, viz `README.md`) nebo ukázat `docs/E2E_VYSLEDEK.txt`.
 
-## Co je ověřeno (17. 11. 2026)
+## Co je ověřeno (18. 11. 2026)
 
 - [x] .NET 10 build je úspěšný (0 chyb, 0 upozornění).
-- [x] SQLite relační testy procházejí (24/24).
+- [x] SQLite relační testy procházejí (26/26).
 - [x] `dotnet ef migrations has-pending-model-changes` vrací bez změn.
 - [x] `dotnet ef database update` uspěje na nové i na již migrované SQL Server databázi s daty (SQL Server 2022 LocalDB).
 - [x] NuGet audit nevypisuje žádné zranitelnosti, ani u transitivních balíčků.
-- [ ] Vlastní MVC Login/Register fungují i při obnově účtu a odhlášení. Registrace, přihlášení, špatné heslo a odhlášení ověřeny. Obnova účtu a lockout neověřeny.
-- [x] Role a bezpečnostní scénáře fungují při ruční kontrole v prohlížeči: cizí vozidlo vrací 404, Customer a Manager nemají přístup do administrace, ochrana admina funguje včetně zobrazené hlášky.
-- [ ] Fotografie, CRUD a typy servisů fungují end-to-end. Vytvoření vozidla a zápis servisu ověřeny. Fotografie a úpravy či mazání neověřeny.
+- [x] Vlastní MVC registrace, přihlášení, zamčení účtu po 5 špatných pokusech a odhlášení fungují. Obnovu zapomenutého hesla e-mailem aplikace nemá (bez e-mailové služby).
+- [x] Role a bezpečnostní scénáře fungují: cizí vozidlo vrací 404, Customer a Manager nemají přístup tam, kam nemají, ochrana admina funguje s hláškou, nová role platí hned, POST bez antiforgery tokenu je odmítnut.
+- [x] Fotografie, CRUD a typy servisů fungují end-to-end: vozidla, servisní záznamy, druhy úkonů, servisy, výrobci a uživatelé včetně úprav a mazání (`scripts/e2e_smoke.sh`, 76/76).
+- [ ] Zelený běh GitHub Actions doložený na GitHubu.
 
-Výsledky pocházejí ze skutečného spuštění, podrobnosti jsou v `docs/STAV_OVERENI.md`. Nezaškrtnuté body je potřeba projít ručně před finální obhajobou. Výsledek GitHub Actions je potřeba doložit zvlášť.
+Výsledky pocházejí ze skutečného spuštění, podrobnosti jsou v `docs/STAV_OVERENI.md` a `docs/E2E_VYSLEDEK.txt`.

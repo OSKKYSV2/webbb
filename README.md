@@ -2,7 +2,13 @@
 
 Semestrální projekt pro předmět **Pokročilé webové technologie**. Technologie: **.NET 10, ASP.NET Core MVC, EF Core 10.0.15, SQL Server, ASP.NET Core Identity, Serilog a xUnit**. Zachovává téma a databázový základ původně odevzdané aplikace. Opravy vycházejí z připomínek vyučujícího a následného posouzení funkčnosti.
 
-> **Stav ověření (17. 11. 2026):** Ověřeno skutečným spuštěním na Windows 11 s .NET SDK 10.0.400 a SQL Server 2022 LocalDB. Build proběhl bez chyb i upozornění, prošlo 24/24 testů a migrace se shodují s modelem. `database update` uspěl na nové databázi i na starší databázi s daty, NuGet audit nenašel žádné zranitelné balíčky a hlavní scénáře všech tří rolí fungují v prohlížeči. **Neověřeno** zůstává nahrávání fotografií, část CRUD scénářů a běh GitHub Actions. Podrobné výsledky i dvě drobné vady v UI, které se při ověření našly a byly opraveny, jsou v `docs/STAV_OVERENI.md`.
+> **Stav ověření (18. 11. 2026):** Ověřeno skutečným spuštěním na Windows 11 s .NET SDK 10.0.400 a SQL Server 2022 LocalDB:
+> - build proběhl bez chyb i upozornění a prošlo **26/26 testů**,
+> - migrace se shodují s modelem a `database update` uspěl na nové i na starší databázi s daty,
+> - NuGet audit nenašel žádné zranitelné balíčky,
+> - end-to-end test `scripts/e2e_smoke.sh` prošel **76/76** kontrol, takže jsou ověřeny všechny scénáře T01–T21 z `docs/TESTOVACI_PLAN.md` ve všech rolích, včetně fotek, CRUD a zabezpečení.
+>
+> Podrobné výsledky a sedm nalezených a opravených nedostatků jsou v `docs/STAV_OVERENI.md`.
 
 ## Funkce aplikace
 
@@ -13,7 +19,7 @@ Semestrální projekt pro předmět **Pokročilé webové technologie**. Technol
 | Manager | Hledání vozidel podle VIN/SPZ, správa servisních záznamů, typů úkonů a servisních dílen. |
 | Admin | Administrace účtů a rolí, správa vozidel, číselníků a všech servisních záznamů. |
 
-**Bezpečnost:** Identity hashuje hesla, POST metody používají antiforgery validaci, Customer vidí jen vlastní vozidla (kontrola i v aplikačních službách), role se kontrolují v controllerech, VIN a SPZ musí být unikátní. Fotky mají kontrolu signatury i maximální velikosti. Hesla se nesmí commitovat.
+**Bezpečnost:** Identity hashuje hesla a po 5 špatných pokusech účet dočasně zamkne. POST metody používají antiforgery validaci. Customer vidí jen vlastní vozidla (kontrola i v aplikačních službách), role se kontrolují v controllerech a změna role nebo smazání účtu platí hned při dalším požadavku. VIN a SPZ musí být unikátní. Fotky mají kontrolu signatury i maximální velikosti (v prohlížeči i na serveru). Chyby 400/404 mají vlastní českou stránku. Hesla se nesmí commitovat.
 
 ## Architektura a školní připomínky
 
@@ -123,10 +129,28 @@ powershell -ExecutionPolicy Bypass -File scripts/verify_full.ps1
 
 Volitelně s `-ApplyDatabase` aplikuje migrace také do nastavené lokální SQL Server databáze. Aktuální stav skutečně provedených kontrol: `docs/STAV_OVERENI.md`.
 
+### End-to-end test všech rolí
+
+`scripts/e2e_smoke.sh` projde běžící aplikaci přes HTTP jako uživatel: registrace, zamčení účtu, vozidla, fotky, servisní záznamy, číselníky, správa uživatelů a kontroly oprávnění (76 kontrol, scénáře T01–T18). Potřebuje **prázdnou databázi**, protože zakládá pevné testovací účty.
+
+```powershell
+# 1) Aplikace nad novou prázdnou databází s testovacím adminem (PowerShell)
+$env:ConnectionStrings__DefaultConnection = "Server=(localdb)\mssqllocaldb;Database=VehicleRegistryDb_E2E;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+dotnet ef database update --project src/VehicleRegistry.Infrastructure --startup-project src/VehicleRegistry.Web
+$env:BootstrapAdmin__Email = "admin@e2e.test"; $env:BootstrapAdmin__Password = "ZVOLTE_SILNE_HESLO1"
+dotnet run --project src/VehicleRegistry.Web --launch-profile http
+```
+
+```bash
+# 2) V druhém okně v Git Bash (potřebuje curl a Python 3)
+ADMIN_EMAIL=admin@e2e.test ADMIN_PASS='ZVOLTE_SILNE_HESLO1' CUST_PASS='Zakaznik123' bash scripts/e2e_smoke.sh
+```
+
+Výsledek posledního běhu je v `docs/E2E_VYSLEDEK.txt`. Testovací databázi pak lze smazat.
+
 ## Git a předání
 
-- Pro aktuální GitHub repozitář s existující historií použijte nově dodanou sadu **git patchů** a `git am` (viz `docs/GIT_POSTUP.md`), nikoli `force push`.
-- Pokud žádný repozitář nemáte, lze začít s přiloženou úplnou pracovní kopií včetně lokální Git historie.
-- Všechny commity v přiložené historii vznikly z konkrétních změn; nepředstírají práci z minulých týdnů.
+- Repozitář na GitHubu obsahuje celý projekt a GitHub Actions při každém pushi spustí build, testy, kontrolu migrací a audit balíčků (`.github/workflows/dotnet.yml`). Postup je v `docs/GIT_POSTUP.md`.
+- Historie začíná importem opravené verze ze 7. týdne a pokračuje skutečnými opravami z ověřování. Nepředstírá práci z minulých týdnů.
 - Odevzdání 7. týdne: DOCX návrh, solution, entity, ER diagram, EF migrace a výsledek buildu, testů a migrací (`docs/STAV_OVERENI.md`).
-- Finální odevzdání: celý projekt, stav CI, otestované role a všechny obrazovky.
+- Finální odevzdání: celý projekt, stav CI, otestované role a všechny obrazovky (`docs/STAV_OVERENI.md`, `docs/E2E_VYSLEDEK.txt`, `docs/OBHAJOBA.md`).

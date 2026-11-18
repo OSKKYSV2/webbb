@@ -1,0 +1,92 @@
+Výstup scripts/e2e_smoke.sh – 18. 11. 2026
+Prostředí: Windows 11, .NET SDK 10.0.400, SQL Server 2022 LocalDB, nová prázdná databáze, Git Bash + curl + Python 3.13
+
+== Účty
+PASS  T01  Registrace zákazníka A
+PASS  T01  Registrace zákazníka B
+PASS  T01  Registrace zákazníka C
+PASS  T02  Duplicitní e-mail: jedna česká hláška
+PASS  --  Přihlášení admina
+== T03 zamčení účtu
+PASS  T03  4. špatné heslo: obecná hláška
+PASS  T03  5. špatné heslo: účet uzamčen
+PASS  T03  Správné heslo během uzamčení: odmítnuto
+== T04–T06 vozidla zákazníka
+PASS  T04  A vytvoří vozidlo
+PASS  T05  VIN s písmenem O odmítnut
+PASS  T06  Duplicitní VIN odmítnut
+PASS  T06  Duplicitní SPZ odmítnuta
+PASS  CRUD  A upraví vozidlo
+PASS  CRUD  Úprava se projeví v detailu (včetně diakritiky)
+== T08/T09 fotografie
+PASS  T08  Nahrání PNG
+PASS  T08  PNG je dostupné na webu
+PASS  T08  Nahrání JPG (nahradí PNG)
+PASS  T08  Stará fotografie smazána z disku
+PASS  T09  Podvržený .exe jako .png odmítnut
+PASS  T09  Soubor 2,5 MB odmítnut
+PASS  T09  Soubor 3,5 MB odmítnut srozumitelnou hláškou
+PASS  T09  Soubor 11 MB: čitelná stránka 400
+PASS  T09  Po odmítnutí zůstala původní fotografie
+PASS  T09  Formulář hlídá 2 MB už v prohlížeči
+== T07 cizí vozidlo a zabezpečení
+PASS  T07  B: detail cizího vozidla 404
+PASS  T07  …se srozumitelnou stránkou
+PASS  T07  B: úprava cizího vozidla 404
+PASS  T07  B: fotka k cizímu vozidlu 404
+PASS  T07  B: smazání cizího vozidla 404
+PASS  SEC  Customer nemá přístup do administrace
+PASS  SEC  Customer nemá přístup k servisním záznamům
+PASS  SEC  POST bez antiforgery tokenu odmítnut (400)
+== T15/T16 admin: role a uživatelé
+PASS  T15  Admin nastaví B roli Manager
+PASS  SEC  Nová role platí hned, bez nového přihlášení
+PASS  T15  Admin vytvoří uživatele
+PASS  T15  Admin smaže uživatele bez vozidel
+PASS  T16  Admin si nemůže odebrat roli (hláška u pole)
+PASS  T16  Admin nemůže smazat sám sebe (hláška v seznamu)
+PASS  T16  Admin účet zůstal
+PASS  T17  Uživatele s vozidlem nelze smazat
+== T10–T13 Manager a servisní záznamy
+PASS  T10  Manager najde vozidlo podle VIN
+PASS  T10  Manager najde vozidlo podle SPZ
+PASS  T12  Dokončený servis s budoucím datem odmítnut
+PASS  T11  Manager zapíše dokončený servis
+PASS  T11  Nájezd vozidla 150 000 km
+PASS  T13  Manager upraví servisní záznam
+PASS  T11  Tachometr nelze snížit pod dokončený servis
+PASS  T13  Manager smaže servisní záznam
+PASS  SEC  Manager nemůže zakládat vozidla
+== T14 číselníky (Manager)
+PASS  T14  Manager přidá druh úkonu
+PASS  T14  Manager upraví druh úkonu
+PASS  T14  Manager smaže nepoužitý druh úkonu
+PASS  T14  Použitý druh úkonu nelze smazat
+PASS  T14  Manager přidá servis
+PASS  T14  Manager upraví servis
+PASS  T14  Servis bez adresy odmítnut
+PASS  T14  Manager smaže servis
+PASS  T14  Manager nemá přístup k výrobcům
+PASS  T14  Manager nemá přístup ke správě uživatelů
+== T15 admin: výrobci, vozidla, záznamy
+PASS  T15  Admin přidá výrobce
+PASS  T15  Duplicitní výrobce odmítnut
+PASS  T15  Admin upraví výrobce
+PASS  T15  Admin vytvoří vozidlo pro zákazníka A
+PASS  T15  Vozidlo vidí zákazník A
+PASS  T15  Použitého výrobce nelze smazat
+PASS  T15  Admin upraví cizí vozidlo
+PASS  T15  Admin vidí všechny servisní záznamy
+PASS  T15  Admin smaže vozidlo
+PASS  T15  Admin smaže nepoužitého výrobce
+== T18 smazání autora servisního záznamu
+PASS  T18  Admin smaže Managera bez vozidel
+PASS  T18  Servisní záznam po smazání autora zůstal
+PASS  SEC  Smazaný uživatel je hned odhlášen
+== Úklid a odhlášení
+PASS  CRUD  A smaže vlastní vozidlo
+PASS  CRUD  Fotografie smazaného vozidla odstraněna
+PASS  --  Odhlášení
+PASS  --  Po odhlášení přesměrování na přihlášení
+
+VÝSLEDEK: 76 PASS, 0 FAIL

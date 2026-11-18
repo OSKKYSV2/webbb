@@ -1,50 +1,32 @@
-# Git – zachování historie a příprava odevzdání
+# Git – historie a předání
 
-Původní `VehicleRegistry-main.zip` neobsahuje složku `.git`, proto nelze obnovit původní autory/časové značky. Dodaný archiv se zdroji a místní Git historií obsahuje skutečné commity nad nahraným snapshotem. **Datumy a commity z dřívějšího semestru nevymýšlíme a původní GitHub historii nepřepisujeme.**
+Původní `VehicleRegistry-main.zip` neobsahoval složku `.git`, proto nelze obnovit původní autory a časové značky. **Datumy a commity z dřívějšího semestru nevymýšlíme.**
 
-## Doporučeno: navázat na existující GitHub repozitář
+## Jak historie vznikla
 
-1. Naklonujte původní repozitář a ověřte čistý pracovní strom:
+Repozitář na GitHubu začíná importem opravené verze odevzdané v 7. týdnu. Další commity jsou skutečné změny z ověřování a dokončování projektu v listopadu 2026, v tomto pořadí:
 
-   ```bash
-   git clone https://github.com/VAŠE_JMENO/VehicleRegistry.git
-   cd VehicleRegistry
-   git status
-   git switch -c opravy-po-kontrole
-   ```
+1. import opravené verze projektu (stav odevzdání 7. týdne),
+2. doplnění skutečných výsledků ověření do dokumentace,
+3. opravy z ověřování: hláška u role administrátora, české chyby Identity,
+4. opravy z end-to-end testu: okamžitá platnost změn rolí, čitelné chybové stránky, limit velikosti fotek,
+5. end-to-end test `scripts/e2e_smoke.sh` a finální dokumentace.
 
-2. Přiložený ZIP `VehicleRegistry-zmeny-format-patch.zip` obsahuje commity s opravami. Patch soubory rozbalte do složky `patches` vedle vašeho klonu; příkazy z jeho kořene:
+Přesný seznam ukáže `git log --oneline`.
 
-   ```bash
-   git am --ignore-date ../patches/*.patch
-   git log --oneline -20
-   git status
-   ```
-
-   `--ignore-date` znamená, že **committer date bude datum aplikování**, původní autorská data v patchi zůstanou. Pokud používáte cizí původní historii, nejprve ověřte, že base commit odpovídá nahranému ZIPu; při konfliktech příkaz odmítne změnu. `git am --abort` vrátí rozpracované aplikování.
-
-3. **Nedělejte force push.** Až projdou testy, proveďte:
-
-   ```bash
-   git push -u origin opravy-po-kontrole
-   ```
-
-   Potom otevřete Pull Request do main a zkontrolujte výsledek GitHub Actions.
-
-## Alternativa: založit nový GitHub repozitář z přiložené historie
-
-Rozbalte archiv s `.git`, nastavte vlastní origin a odešlete pracovní větev na nové URL. Upozornění: první commit je import přiloženého ZIPu, ne skutečný původní historický postup vašich starších vývojových týdnů.
+## Práce s repozitářem
 
 ```bash
-git remote remove origin # jen pokud existuje starý origin
-git remote add origin https://github.com/VAŠE_JMENO/VehicleRegistry.git
-git branch -M main
-git push -u origin main
+git clone <adresa repozitáře na GitHubu>
+cd VehicleRegistry
+git status
 ```
 
-## Obsah commitů a odevzdání
+Každý push spustí GitHub Actions (`.github/workflows/dotnet.yml`): restore s NuGet auditem, build, testy, kontrolu shody EF modelu s migracemi, vygenerování SQL skriptu a výpis zranitelných balíčků. Výsledek je na záložce **Actions** v repozitáři. Pokud CI neprojde, aplikace není připravená k odevzdání.
 
-Commity rozdělují logické změny: oddělení vrstev, implementace služeb, UI, vlastní MVC Identity, testy, bezpečnostní opravy, navigace a následnou migraci, CI a dokumentaci. Nenechávejte na GitHubu `obj`, `bin`, `secrets`, fotky uživatelů ani `.env`.
+**Nedělejte force push** a nepřepisujte historii. Na GitHub nepatří `bin`, `obj`, `.env`, User Secrets, fotky uživatelů (`wwwroot/uploads`) ani `upgrade.sql`; všechno hlídá `.gitignore`.
 
-- **7. týden**: `docs/Navrh_aplikace_7_tyden.docx`, `docs/ER_diagram.mmd`, solution, Domain entity, Infrastructure konfigurace, migrace, doklad buildu + DB update.
-- **Finální odevzdání**: celá solution, CI výsledky, testy, manuálně ověřené role, CRUD a obhajoba.
+## Co patří k odevzdání
+
+- **7. týden**: `docs/Navrh_aplikace_7_tyden.docx`, `docs/ER_diagram.mmd`, solution, Domain entity, Infrastructure konfigurace, migrace, doklad buildu a DB update (`docs/STAV_OVERENI.md`).
+- **Finální odevzdání (14. týden)**: celá solution v repozitáři, zelený běh GitHub Actions, testy, ověřené role a CRUD (`docs/STAV_OVERENI.md`, `docs/E2E_VYSLEDEK.txt`) a podklady k obhajobě (`docs/OBHAJOBA.md`).
